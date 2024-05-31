@@ -5,7 +5,7 @@ using UnityEngine;
 public class MainManager : MonoBehaviour
 {
     public static MainManager Instance;
-    public string playerName;
+    public string playerName = "Player";
     public int gameTypeSelection;
     
 
@@ -20,8 +20,6 @@ public class MainManager : MonoBehaviour
 
         LoadGameData();
     }
-
-
 
     [Serializable]
     public class GameData{
