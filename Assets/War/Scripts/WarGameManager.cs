@@ -6,27 +6,61 @@ using UnityEngine;
 
 public class WarGameManager : CardGameManager
 {
-    public GameObject deckPrefab, cardPrefab;
+    private Transform canvas;
+    public GameObject playerPrefab, deckPrefab, cardPrefab;
     DeckController mainDeck;
-    DeckController[] playerDecks;
+    PlayerController[] players;
     public Sprite[] faceSprites;
     public Sprite[] backSprites;
     private readonly char[] suitChars = new char[]{'c', 'd', 'h', 's'};
 
+    void Start(){
+        canvas = GameObject.Find("Canvas").transform;
+        SetupGame();
+    }
+
     public override void SetupGame()
     {
         LoadCardSprites();
-        mainDeck = CreateDeck(Vector3.zero, 0);
-        playerDecks = new DeckController[] {
-                                    CreateDeck(GameObject.Find("Player1").transform.position, 0, true),
-                                    CreateDeck(GameObject.Find("Player2").transform.position, 0, true)
-                                };
 
-        mainDeck.DistributeCards(playerDecks);
+        Debug.Log("placing players");
+        PlacePlayers();
+        Debug.Log("players placed");
+
+
+        mainDeck = CreateDeck(Vector3.zero, 0);
+        Debug.Log("main deck created");
+
+        mainDeck.DistributeCards(players.ToList()
+                                        .Select(player => player.GetDeck())
+                                        .ToArray()
+        );
     }
 
-    public DeckController CreateDeck(Vector3 spawnPoint, int colorIndex, bool empty = false){
-        DeckController newDeck =  Instantiate(deckPrefab, spawnPoint, quaternion.identity).GetComponent<DeckController>();
+    private void PlacePlayers()
+    {
+        GameObject[] playersObj = new GameObject[]{
+            Instantiate(playerPrefab, canvas),
+            Instantiate(playerPrefab, canvas)
+        };
+        Debug.Log($"p1: {playersObj[0]}\np2: {playersObj[1]}");
+        playersObj[0].GetComponent<Transform>();
+        players[0] = playersObj[0].GetComponent<PlayerController>();
+        players[1] = playersObj[1].GetComponent<PlayerController>();
+
+//        players[0] = Instantiate(playerPrefab, canvas).GetComponent<PlayerController>();
+//        players[1] = Instantiate(playerPrefab, canvas).GetComponent<PlayerController>();
+        
+        players[0].SetPosition(PlayerController.PlayerPosition.CB);
+        players[1].SetPosition(PlayerController.PlayerPosition.CT);
+    }
+
+    public DeckController CreateDeck(Vector3 spawnPoint, int colorIndex, bool empty = false, Transform parent = null){
+        if(parent == null){
+            parent = canvas;
+        }
+
+        DeckController newDeck =  Instantiate(deckPrefab, spawnPoint, quaternion.identity, parent).GetComponent<DeckController>();
         if(empty){
             return newDeck;
         }

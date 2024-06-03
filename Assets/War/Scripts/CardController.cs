@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardController : MonoBehaviour
 {
@@ -8,12 +7,12 @@ public class CardController : MonoBehaviour
     public int value = 0;
     public bool faceUp = true;
     public Sprite[] cardPrints = new Sprite[2];
-    public SpriteRenderer SR;
+    public Image cardImage;
 
     // Start is called before the first frame update
     void Start()
     {
-        SR = GetComponent<SpriteRenderer>();
+        cardImage = GetComponent<Image>();
     }
 
     // Update is called once per frame
@@ -23,14 +22,14 @@ public class CardController : MonoBehaviour
     }
 
     public void TurnCard(){
-        if(SR == null){
-            SR = GetComponent<SpriteRenderer>();
+        if(cardImage == null){
+            cardImage = GetComponent<Image>();
         }
         faceUp = !faceUp;
         if(faceUp){
-            SR.sprite = cardPrints[0];
+            cardImage.sprite = cardPrints[0];
         } else {
-            SR.sprite = cardPrints[1];
+            cardImage.sprite = cardPrints[1];
         }
     }
 
@@ -41,20 +40,20 @@ public class CardController : MonoBehaviour
     public void TurnFaceUp(){
         faceUp = true;
         
-        if(SR == null){
-            SR = GetComponent<SpriteRenderer>();
+        if(cardImage == null){
+            cardImage = GetComponent<Image>();
         }
-        SR.sprite = cardPrints[0];
+        cardImage.sprite = cardPrints[0];
     }
 
     public void TurnFaceDown(){
 
         faceUp = false;
 
-        if(SR == null){
-            SR = GetComponent<SpriteRenderer>();
+        if(cardImage == null){
+            cardImage = GetComponent<Image>();
         }
-        SR.sprite = cardPrints[1];
+        cardImage.sprite = cardPrints[1];
     }
 
     public void SetValue(int value){
@@ -81,5 +80,9 @@ public class CardController : MonoBehaviour
     
     public void MoveTo(Vector3 destination){
         transform.position = destination;
+    }
+
+    public void Translate(Vector3 destination){
+        transform.Translate(destination);
     }
 }

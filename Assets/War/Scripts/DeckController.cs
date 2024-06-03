@@ -1,10 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class DeckController : MonoBehaviour
 {
@@ -13,23 +9,52 @@ public class DeckController : MonoBehaviour
 
     private bool faceUp = false;
 
-    // add a card to the card stack making sure they match the deck orientation and setting them as a child of this deck in the scene
-    public void AddCard(CardController card){
+    public enum DeckType{
+        regular,
+        player
+    }
 
-        cards.Push(card);
-        card.GetComponent<Transform>().SetParent(transform);
+    public DeckType deckType = DeckType.regular;
+
+    // add a card to the card stack making sure they match the deck orientation and setting them as a child of this deck in the scene
+    public void AddCard(CardController newCard){
+
+        
+        newCard.GetComponent<Transform>().SetParent(transform);
         
         if(faceUp){
-            card.TurnFaceUp();
+            newCard.TurnFaceUp();
         } else {
-            card.TurnFaceDown();
+            newCard.TurnFaceDown();
         }
 
         if(stackedMessy){
             //make rotation random
         }
 
-        card.MoveTo(transform.position + (Vector3.zero + (0.01f * cards.Count * (Vector3.left + Vector3.back)) + (0.005f * cards.Count * Vector3.up)));
+        Vector3 cardOffset;
+
+        switch (deckType)
+        {
+            case DeckType.regular:
+                cardOffset = new Vector3(.1f, 0.005f, -0.1f);
+                newCard.MoveTo(cardOffset.x * cards.Count * Vector3.left + 
+                            cardOffset.y * cards.Count * Vector3.up +
+                            cardOffset.z * cards.Count * Vector3.forward);
+                break;
+            // seperates cards by a quarter of their width and makes sure that the deck is centered on the deck position
+            case DeckType.player:
+                float cardWidth = newCard.GetComponent<RectTransform>().rect.width;
+                foreach(CardController card in cards){
+                    card.Translate(0.25f * cardWidth * Vector3.left + 0.1f * cards.Count * Vector3.up);
+                }
+                newCard.Translate(0.25f * cards.Count * cardWidth * Vector3.right);
+                break;
+            default:
+                break;
+        }
+        
+        
     }
 
     // add every card in the given stack to the deck
