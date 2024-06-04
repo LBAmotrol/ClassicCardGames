@@ -16,7 +16,6 @@ public class WarGameManager : CardGameManager
     PlayerController[] players;
     public Sprite[] faceSprites;
     public Sprite[] backSprites;
-    private readonly char[] suitChars = new char[]{'c', 'd', 'h', 's'};
 
     /**
         <summary>
