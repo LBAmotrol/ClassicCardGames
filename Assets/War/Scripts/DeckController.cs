@@ -2,6 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/**
+    <summary>
+        Controls a deck object
+    </summary>
+**/
 public class DeckController : MonoBehaviour
 {
     private Stack<CardController> cards = new Stack<CardController>();
@@ -9,6 +14,11 @@ public class DeckController : MonoBehaviour
 
     private bool faceUp = false;
 
+    /**
+        <summary>
+            Enum for possible deck types
+        </summary>
+    **/
     public enum DeckType{
         regular,
         player
@@ -16,7 +26,13 @@ public class DeckController : MonoBehaviour
 
     public DeckType deckType = DeckType.regular;
 
-    // add a card to the card stack making sure they match the deck orientation and setting them as a child of this deck in the scene
+    // 
+    /**
+        <summary>
+            Add a card as a child and to the card stack, matching orientation and position
+        </summary>
+        <param name="newCard">The card to be added</param>
+    **/
     public void AddCard(CardController newCard){
 
         
@@ -29,7 +45,7 @@ public class DeckController : MonoBehaviour
         }
 
         if(stackedMessy){
-            //make rotation random
+            //ToDo: make rotation random
         }
 
         Vector3 cardOffset;
@@ -42,13 +58,15 @@ public class DeckController : MonoBehaviour
                             cardOffset.y * cards.Count * Vector3.up +
                             cardOffset.z * cards.Count * Vector3.forward);
                 break;
+
             // seperates cards by a quarter of their width and makes sure that the deck is centered on the deck position
             case DeckType.player:
                 float cardWidth = newCard.GetComponent<RectTransform>().rect.width;
+                float spacingRatio = 0.25f;
                 foreach(CardController card in cards){
-                    card.Translate(0.25f * cardWidth * Vector3.left + 0.1f * cards.Count * Vector3.up);
+                    card.Translate(spacingRatio * cardWidth * Vector3.left + 0.1f * cards.Count * Vector3.up);
                 }
-                newCard.Translate(0.25f * cards.Count * cardWidth * Vector3.right);
+                newCard.Translate(spacingRatio * cards.Count * cardWidth * Vector3.right);
                 break;
             default:
                 break;
@@ -62,7 +80,6 @@ public class DeckController : MonoBehaviour
             Add every card in the given stack to the deck
         </summary>
         <param name="newCards">A stack of new cards to be added to the deck</param>
-        <returns>void</returns>
     **/
     public void AddCards(Stack<CardController> newCards){
         while (newCards.TryPop(out CardController card))
@@ -71,7 +88,11 @@ public class DeckController : MonoBehaviour
         }
     }
 
-    // change deck orientation to face up and re-add all cards
+    /**
+        <summary>
+            change deck orientation to face up and re-add all cards, correcting their image
+        </summary>
+    **/
     public void TurnFaceUp(){
         if(faceUp){
             return;
@@ -83,7 +104,11 @@ public class DeckController : MonoBehaviour
         AddCards(tempDeck);
     }
     
-    // change deck orientation to face down and re-add all cards
+    /**
+        <summary>
+            change deck orientation to face down and re-add all cards, correcting their image
+        </summary>
+    **/
     public void TurnFaceDown(){
         if(!faceUp){
             return;
@@ -95,10 +120,21 @@ public class DeckController : MonoBehaviour
         AddCards(tempDeck);
     }
 
+    /**
+        <summary>
+            Returns the stack of cards
+        </summary>
+        <returns>The stack of all cards in the deck</returns>
+    **/
     public Stack<CardController> GetCards(){
         return cards;
     }
 
+    /**
+        <summary>
+            Orders the cards by suit then value
+        </summary>
+    **/
     public void OrderCards(){
         Stack<CardController> orderedCards = cards;
         cards = new Stack<CardController>();
@@ -107,31 +143,44 @@ public class DeckController : MonoBehaviour
         });
     }
 
-    public void DistributeCards(DeckController[] players){
+    /**
+        <summary>
+            Distributes the cards evenly among given decks (extra cards will make it uneven)
+        </summary>
+        <param name="decks">all decks to distribute the cards between</param>
+    **/
+    public void DistributeCards(DeckController[] decks){
         int playerIndex = 0;
         while (cards.TryPop(out CardController card))
         {
-            if(playerIndex == players.Length){
+            if(playerIndex == decks.Length){
                 playerIndex = 0;
             }
-            players[playerIndex].AddCard(card);
+            decks[playerIndex].AddCard(card);
 
             playerIndex++;
         }
     }
 
-    public void DistributeCards(DeckController[] players, DeckController overflow){
+    /**
+        <summary>
+            Distributes the cards evenly among given decks, extra cards being put in the given overflow deck
+        </summary>
+        <param name="decks">all decks to distribute the cards between</param>
+        <param name="overflow">destination for remaining cards</param>
+    **/
+    public void DistributeCards(DeckController[] decks, DeckController overflow){
         for (int i = 0; cards.TryPop(out CardController card); )
         {
-            if(i == players.Length){
+            if(i == decks.Length){
                 i = 0;
-                if(cards.Count < players.Length){
+                if(cards.Count < decks.Length){
                     cards.Push(card);
                     overflow.AddCards(cards);
                     break;
                 }
             }
-            players[i].AddCard(card);
+            decks[i].AddCard(card);
         }
     }
 

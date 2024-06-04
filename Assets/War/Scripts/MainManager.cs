@@ -2,9 +2,14 @@ using System;
 using System.IO;
 using UnityEngine;
 
+/**
+    <summary>
+        Manages the game as a whole
+    </summary>
+**/
 public class MainManager : MonoBehaviour
 {
-    /// Singleton of MainManager
+    // Singleton of MainManager
     public static MainManager Instance;
     public string playerName = "Player";
     public int gameTypeSelection;
@@ -13,8 +18,6 @@ public class MainManager : MonoBehaviour
         <summary>
             Loads save state or deletes this oject if a main manager already exists
         </summary>
-        <param name="blank">a param</param>
-        <returns>void</returns>
     **/
     private void Awake(){
         if(Instance != null){
@@ -32,8 +35,6 @@ public class MainManager : MonoBehaviour
         <summary>
             Models game data for saving
         </summary>
-        <param name="blank">a param</param>
-        <returns>void</returns>
     **/
     [Serializable]
     public class GameData{
@@ -42,9 +43,8 @@ public class MainManager : MonoBehaviour
     }
     /**
         <summary>
-            save game data as a json file
+            Saves game data as a json file
         </summary>
-        <returns>void</returns>
     **/
     public void SaveGameData(){
         GameData data = new(){
@@ -59,10 +59,8 @@ public class MainManager : MonoBehaviour
 
     /**
         <summary>
-            blah blah blah
+            Leads game data from a json file
         </summary>
-        <param name="blank">a param</param>
-        <returns>void</returns>
     **/
     public void LoadGameData(){
         string path = Application.persistentDataPath + "/saveFile.json";
