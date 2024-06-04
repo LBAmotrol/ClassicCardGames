@@ -57,7 +57,13 @@ public class DeckController : MonoBehaviour
         
     }
 
-    // add every card in the given stack to the deck
+    /**
+        <summary>
+            Add every card in the given stack to the deck
+        </summary>
+        <param name="newCards">A stack of new cards to be added to the deck</param>
+        <returns>void</returns>
+    **/
     public void AddCards(Stack<CardController> newCards){
         while (newCards.TryPop(out CardController card))
         {
