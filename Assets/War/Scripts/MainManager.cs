@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /**
     <summary>
@@ -11,7 +12,7 @@ public class MainManager : MonoBehaviour
 {
     // Singleton of MainManager
     public static MainManager Instance;
-    public string playerName = "Player";
+    public string playerName = "Testing";
     public int gameTypeSelection;
     
     /**
@@ -29,6 +30,10 @@ public class MainManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         LoadGameData();
+    }
+
+    public void ExitToMenu(){
+        SceneManager.LoadScene(0);
     }
 
     /**
