@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /**
@@ -13,6 +14,7 @@ public class DeckController : MonoBehaviour
     private bool stackedMessy = false;
 
     private bool faceUp = false;
+    private RectTransform rectTransform;
 
     /**
         <summary>
@@ -54,7 +56,7 @@ public class DeckController : MonoBehaviour
         {
             case DeckType.regular:
                 cardOffset = new Vector3(.1f, 0.005f, -0.1f);
-                newCard.MoveTo(cardOffset.x * cards.Count * Vector3.left + 
+                newCard.SetAnchorPosition(cardOffset.x * cards.Count * Vector3.left + 
                             cardOffset.y * cards.Count * Vector3.up +
                             cardOffset.z * cards.Count * Vector3.forward);
                 break;
@@ -64,9 +66,9 @@ public class DeckController : MonoBehaviour
                 float cardWidth = newCard.GetComponent<RectTransform>().rect.width;
                 float spacingRatio = 0.25f;
                 foreach(CardController card in cards){
-                    card.Translate(spacingRatio * cardWidth * Vector3.left + 0.1f * cards.Count * Vector3.up);
+                    card.TranslateAnchorPosition(spacingRatio * cardWidth * Vector3.left + 0.1f * cards.Count * Vector3.up);
                 }
-                newCard.Translate(spacingRatio * cards.Count * cardWidth * Vector3.right);
+                newCard.TranslateAnchorPosition(spacingRatio * cards.Count * cardWidth * Vector3.right);
                 break;
             default:
                 break;
@@ -181,6 +183,22 @@ public class DeckController : MonoBehaviour
                 }
             }
             decks[i].AddCard(card);
+        }
+    }
+
+    /**
+
+    **/
+    public void SetAnchorPosition(Vector2 destination){
+        Vector3 translation = destination - rectTransform.anchoredPosition;
+        TranslateAnchorPosition(translation);
+    }
+
+    public void TranslateAnchorPosition(Vector2 translation){
+        rectTransform.anchoredPosition += translation;
+
+        foreach (CardController card in cards){
+            card.TranslateAnchorPosition(translation);
         }
     }
 

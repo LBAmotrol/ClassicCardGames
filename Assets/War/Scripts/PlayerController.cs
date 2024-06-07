@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
             Assigns object components to properties
         </summary>
     **/
-    void Start(){
+    void Awake(){
         rectTransform = transform.GetComponent<RectTransform>();
         deck = transform.GetChild(0).GetComponent<DeckController>();
         playerName = transform.GetChild(1).GetComponent<TextMeshProUGUI>();
@@ -88,12 +88,13 @@ public class PlayerController : MonoBehaviour
     **/
     public void SetPosition(PlayerPosition playerPosition){
         Vector2[] playerPositionVectors = new Vector2[]{
-            new(0,0),     new(185f, 0),    new(0, 0),
+            new(0,0),     new(0, -185f),    new(0, 0),
             new(0,0),  new(0, 0), new(0, 0),
-            new(0,0),     new(-185f, 0),    new(0, 0)
+            new(0,0),     new(0, 185f),    new(0, 0)
         };
 
-        transform.GetComponentsInChildren<RectTransform>().ToList().ForEach(child => child.position = playerPositionVectors[(int)playerPosition]);
+        rectTransform.anchoredPosition = playerPositionVectors[(int)playerPosition];
+        //transform.GetComponentsInChildren<RectTransform>().ToList().ForEach(child => child.GetComponent<RectTransform>().pivot = playerPositionVectors[(int)playerPosition]);
 
         // ToDo: rotate deck for players on the sides
         /*switch (playerPosition)
@@ -120,9 +121,9 @@ public class PlayerController : MonoBehaviour
     **/
     private void SetAnchor(PlayerPosition playerPosition){
         Vector2[] anchorVectors = new Vector2[]{
-        new(0,1),     new(0.5f, 1),    new(1, 1),
-        new(0,0.5f),  new(0.5f, 0.5f), new(1, 0.5f),
-        new(0,0),     new(0.5f, 0),    new(1, 0)
+            new(0,1),     new(0.5f, 1),    new(1, 1),
+            new(0,0.5f),  new(0.5f, 0.5f), new(1, 0.5f),
+            new(0,0),     new(0.5f, 0),    new(1, 0)
         };
 
         rectTransform.anchorMin = rectTransform.anchorMax = anchorVectors[(int)playerPosition];

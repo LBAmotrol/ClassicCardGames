@@ -31,13 +31,14 @@ public class WarGameManager : CardGameManager
         Debug.Log("players placed");
 
 
-        mainDeck = CreateDeck(Vector3.zero, 0);
+        mainDeck = CreateDeck(0);
         Debug.Log("main deck created");
 
         mainDeck.DistributeCards(players.ToList()
                                         .Select(player => player.GetDeck())
                                         .ToArray()
         );
+        Debug.Log("cards dealt");
     }
 
     /**
@@ -47,6 +48,8 @@ public class WarGameManager : CardGameManager
     **/
     private void PlacePlayers()
     {
+        players = new PlayerController[2];
+
         //creates players
         GameObject[] playersObj = new GameObject[]{
             Instantiate(playerPrefab, canvas),
@@ -68,7 +71,7 @@ public class WarGameManager : CardGameManager
         players[0].SetPosition(PlayerController.PlayerPosition.CenterBottom);
         players[1].SetPosition(PlayerController.PlayerPosition.CenterTop);
 
-        players[0].SetName(MainManager.Instance.name);
+        players[0].SetName(MainManager.Instance.playerName);
         players[1].SetName("The Enemy");
     }
 
@@ -76,24 +79,24 @@ public class WarGameManager : CardGameManager
         <summary>
             Creates a deck object
         </summary>
-        <param name="spawnPoint">The starting position of the deck</param>
         <param name="colorIndex">The selected back color of the deck</param>
         <param name="empty">If the deck is to be filled with cards or not</param>
         <param name="parent">The selected parent of the deck (game canvas if null)</param>
     **/
-    public DeckController CreateDeck(Vector3 spawnPoint, int colorIndex, bool empty = false, Transform parent = null){
+    public DeckController CreateDeck(int colorIndex, bool empty = false, Transform parent = null){
         if(parent == null){
             parent = canvas;
         }
 
-        DeckController newDeck =  Instantiate(deckPrefab, spawnPoint, quaternion.identity, parent).GetComponent<DeckController>();
+        DeckController newDeck =  Instantiate(deckPrefab,  parent).GetComponent<DeckController>();
+        newDeck.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
         if(empty){
             return newDeck;
         }
-
+        Debug.Log("in createdeck 1");
         CardController currentCard;
         Stack<CardController> newCards = new();
-
+        Debug.Log("in createdeck 2");
         CardSuit[] suits = new CardSuit[]{
             CardSuit.club,
             CardSuit.diamond,
@@ -108,9 +111,9 @@ public class WarGameManager : CardGameManager
                 newCards.Push(currentCard);
             }
         }
-
+        Debug.Log("in createdeck 3");
         newDeck.AddCards(newCards);
-
+        Debug.Log("in createdeck 4");
         return newDeck;
     }
 

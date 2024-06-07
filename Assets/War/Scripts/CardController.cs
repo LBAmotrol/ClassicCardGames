@@ -13,15 +13,17 @@ public class CardController : MonoBehaviour
     public bool faceUp = true;
     public Sprite[] cardPrints = new Sprite[2];
     public Image cardImage;
+    private RectTransform rectTransform;
 
     /**
         <summary>
             Assigns the component for the card image
         </summary>
     **/
-    void Start()
+    void Awake()
     {
         cardImage = GetComponent<Image>();
+        rectTransform = GetComponent<RectTransform>();
     }
 
     /**
@@ -134,15 +136,25 @@ public class CardController : MonoBehaviour
         this.suit = suit;
         cardPrints = new Sprite[] {facePrint, backPrint};
     }
-    
+
     /**
         <summary>
             moves the position of the card to the given destination
         </summary>
         <param name="destination">The point to which the card moves</param>
     **/
-    public void MoveTo(Vector3 destination){
-        transform.position = destination;
+    public void SetAnchorPosition(Vector2 destination){
+        rectTransform.anchoredPosition = destination;
+    }
+
+    /**
+        <summary>
+            moves the position of the card to the given destination
+        </summary>
+        <param name="destination">The point to which the card moves</param>
+    **/
+    public void SetAnchorPosition(Vector3 destination){
+        rectTransform.anchoredPosition3D = destination;
     }
 
     /**
@@ -151,7 +163,7 @@ public class CardController : MonoBehaviour
         </summary>
         <param name="translation">The Distance and direction to move the card</param>
     **/
-    public void Translate(Vector3 translation){
-        transform.Translate(translation);
+    public void TranslateAnchorPosition(Vector2 translation){
+        rectTransform.anchoredPosition += translation;
     }
 }
